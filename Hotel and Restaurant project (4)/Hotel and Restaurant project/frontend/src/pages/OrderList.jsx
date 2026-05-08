@@ -10,17 +10,27 @@ const OrderList = () => {
 
   const API = 'http://localhost:8080/api';
   const getHeaders = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
+   
   const fetchOrders = async () => {
-    try {
-      const response = await axios.get(`${API}/orders`, getHeaders());
-      setOrders(response.data || []);
-    } catch (error) {
-      console.error("Error fetching orders", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+
+  try {
+    const customerId = localStorage.getItem('customerId');
+
+    const response = await axios.get(
+      `http://localhost:8080/api/orders/customer/${customerId}`,
+      getHeaders()
+    );
+
+    setOrders(response.data || []);
+
+  } catch (error) {
+    console.error("Error fetching orders", error);
+    alert("Failed to load orders");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleCancelOrder = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this order?")) return;

@@ -371,15 +371,23 @@ const ServiceRequests = () => {
   };
 
   const fetchRequests = async () => {
-    try {
-      const res = await axios.get('http://localhost:8080/api/service-requests', getHeaders());
-      setRequests(res.data || []);
-    } catch (err) {
-      console.error("Error fetching service requests", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+
+    const customerId = localStorage.getItem('customerId');
+
+    const res = await axios.get(
+      `http://localhost:8080/api/service-requests/customer/${customerId}`,
+      getHeaders()
+    );
+
+    setRequests(res.data || []);
+
+  } catch (err) {
+    console.error("Error fetching service requests", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => { fetchRequests(); }, []);
 

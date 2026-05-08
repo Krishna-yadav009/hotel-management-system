@@ -121,48 +121,306 @@ const CustomerDashboard = () => {
   };
 
   return (
-    <div>
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h2>My Dashboard</h2>
-        <div className="flex gap-3">
-          <button
-            className="btn btn-secondary flex items-center gap-2"
-            onClick={handleOpenProfile}
-          >
-            <User size={16} />
-            Update Profile
-          </button>
-          <button className="btn btn-primary" onClick={() => navigate('/booking')}>
-            Book a Room
-          </button>
-        </div>
-      </div>
+  <div
+    style={{
+      minHeight: '100vh',
+      background:
+        'radial-gradient(circle at top left, rgba(79,70,229,0.15), transparent 30%)'
+    }}
+  >
+     {/* Premium Welcome Header */}
+<div
+  style={{
+    background: 'linear-gradient(135deg, #1e293b, #0f172a)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: '20px',
+    padding: '28px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '30px',
+    boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
+    transition: 'all 0.3s ease',
+    cursor: 'pointer'
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.transform = 'translateY(-6px)';
+    e.currentTarget.style.boxShadow =
+      '0 20px 40px rgba(99,102,241,0.25)';
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.transform = 'translateY(0px)';
+    e.currentTarget.style.boxShadow =
+      '0 10px 30px rgba(0,0,0,0.25)';
+  }}
+>
+  <div>
+    <h1
+      style={{
+        color: 'white',
+        fontSize: '2rem',
+        fontWeight: '700',
+        marginBottom: '8px'
+      }}
+    >
+      Welcome back, {currentCustomer?.firstName || 'Guest'} 👋
+    </h1>
 
-      {/* Stat Cards */}
-      <div className="dashboard-grid">
-        <div className="stat-card">
-          <div className="stat-icon"><Bed /></div>
-          <div className="stat-info">
-            <h4>Total Bookings</h4>
-            <p>{data.bookings.length}</p>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon"><Utensils /></div>
-          <div className="stat-info">
-            <h4>Restaurant Orders</h4>
-            <p>{data.orders.length}</p>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon"><Star /></div>
-          <div className="stat-info">
-            <h4>Loyalty Points</h4>
-            <p>{data.loyaltyPoints}</p>
-          </div>
-        </div>
-      </div>
+    <p style={{ color: '#94a3b8' }}>
+      Manage your bookings, dining, and luxury hotel experiences.
+    </p>
+  </div>
+
+  <div
+    style={{
+      width: '60px',
+      height: '60px',
+      borderRadius: '50%',
+      background: 'linear-gradient(135deg,#4f46e5,#7c3aed)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'white',
+      fontWeight: '700',
+      fontSize: '22px',
+      boxShadow: '0 0 25px rgba(99,102,241,0.35)'
+    }}
+  >
+    {currentCustomer?.firstName?.charAt(0) || 'G'}
+  </div>
+</div>
+
+{/* Dashboard Top Actions */}
+<div className="flex justify-between items-center mb-6">
+  <h2 style={{ fontSize: '2rem', fontWeight: '700' }}>
+    My Dashboard
+  </h2>
+
+  <div className="flex gap-3">
+   <button
+  className="btn btn-secondary flex items-center gap-2"
+  onClick={handleOpenProfile}
+  style={{
+    transition: 'all 0.3s ease',
+    boxShadow: '0 6px 15px rgba(16,185,129,0.25)'
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.transform = 'translateY(-4px)';
+    e.currentTarget.style.boxShadow =
+      '0 12px 25px rgba(16,185,129,0.45)';
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.transform = 'translateY(0px)';
+    e.currentTarget.style.boxShadow =
+      '0 6px 15px rgba(16,185,129,0.25)';
+  }}
+>
+  <User size={16} />
+  Update Profile
+</button>
+
+    <button
+      className="btn btn-primary"
+      onClick={() => navigate('/booking')}
+    >
+      Book a Room
+    </button>
+  </div>
+</div>
+
+     {/* Stat Cards */}
+<div
+  className="dashboard-grid"
+  style={{
+    marginBottom: '30px'
+  }}
+>
+  {/* Total Bookings */}
+  <div
+    className="stat-card"
+    style={{
+      background: 'linear-gradient(135deg, #1e293b, #0f172a)',
+      border: '1px solid rgba(255,255,255,0.08)',
+      borderRadius: '18px',
+      padding: '24px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '18px',
+      transition: '0.3s ease',
+      cursor: 'pointer',
+      boxShadow: '0 8px 20px rgba(0,0,0,0.25)'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = 'translateY(-6px)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = 'translateY(0px)';
+    }}
+  >
+    <div
+      style={{
+        width: '65px',
+        height: '65px',
+        borderRadius: '18px',
+        background: 'rgba(99,102,241,0.15)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#6366f1',
+        boxShadow: '0 0 20px rgba(99,102,241,0.25)'
+      }}
+    >
+      <Bed size={30} />
+    </div>
+
+    <div>
+      <h4
+        style={{
+          color: '#94a3b8',
+          marginBottom: '6px',
+          fontSize: '14px'
+        }}
+      >
+        Total Bookings
+      </h4>
+
+      <p
+        style={{
+          color: 'white',
+          fontSize: '32px',
+          fontWeight: '700',
+          margin: 0
+        }}
+      >
+        {data.bookings.length}
+      </p>
+    </div>
+  </div>
+
+  {/* Restaurant Orders */}
+  <div
+    className="stat-card"
+    style={{
+      background: 'linear-gradient(135deg, #1e293b, #0f172a)',
+      border: '1px solid rgba(255,255,255,0.08)',
+      borderRadius: '18px',
+      padding: '24px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '18px',
+      transition: '0.3s ease',
+      cursor: 'pointer',
+      boxShadow: '0 8px 20px rgba(0,0,0,0.25)'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = 'translateY(-6px)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = 'translateY(0px)';
+    }}
+  >
+    <div
+      style={{
+        width: '65px',
+        height: '65px',
+        borderRadius: '18px',
+        background: 'rgba(139,92,246,0.15)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#8b5cf6',
+        boxShadow: '0 0 20px rgba(139,92,246,0.25)'
+      }}
+    >
+      <Utensils size={30} />
+    </div>
+
+    <div>
+      <h4
+        style={{
+          color: '#94a3b8',
+          marginBottom: '6px',
+          fontSize: '14px'
+        }}
+      >
+        Restaurant Orders
+      </h4>
+
+      <p
+        style={{
+          color: 'white',
+          fontSize: '32px',
+          fontWeight: '700',
+          margin: 0
+        }}
+      >
+        {data.orders.length}
+      </p>
+    </div>
+  </div>
+
+  {/* Loyalty Points */}
+  <div
+    className="stat-card"
+    style={{
+      background: 'linear-gradient(135deg, #1e293b, #0f172a)',
+      border: '1px solid rgba(255,255,255,0.08)',
+      borderRadius: '18px',
+      padding: '24px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '18px',
+      transition: '0.3s ease',
+      cursor: 'pointer',
+      boxShadow: '0 8px 20px rgba(0,0,0,0.25)'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = 'translateY(-6px)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = 'translateY(0px)';
+    }}
+  >
+    <div
+      style={{
+        width: '65px',
+        height: '65px',
+        borderRadius: '18px',
+        background: 'rgba(236,72,153,0.15)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#ec4899',
+        boxShadow: '0 0 20px rgba(236,72,153,0.25)'
+      }}
+    >
+      <Star size={30} />
+    </div>
+
+    <div>
+      <h4
+        style={{
+          color: '#94a3b8',
+          marginBottom: '6px',
+          fontSize: '14px'
+        }}
+      >
+        Loyalty Points
+      </h4>
+
+      <p
+        style={{
+          color: 'white',
+          fontSize: '32px',
+          fontWeight: '700',
+          margin: 0
+        }}
+      >
+        {data.loyaltyPoints}
+      </p>
+    </div>
+  </div>
+</div>
 
       {/* Stays & Orders */}
       <div className="dashboard-grid mt-8">
@@ -184,7 +442,7 @@ const CustomerDashboard = () => {
               </span>
             </div>
           )) : (
-            <p className="text-text-muted">No recent stays found.</p>
+            <p className="text-text-muted">You haven't booked any stays yet.</p>
           )}
         </div>
 
@@ -199,7 +457,7 @@ const CustomerDashboard = () => {
               </div>
             </div>
           )) : (
-            <p className="text-text-muted">No recent orders.</p>
+            <p className="text-text-muted">No dining orders placed yet..</p>
           )}
         </div>
       </div>

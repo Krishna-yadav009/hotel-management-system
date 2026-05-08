@@ -12,34 +12,74 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
-        
-        // Fetch real data from the Spring Boot database endpoints
-        const [customersRes, paymentsRes, reservationsRes] = await Promise.all([
-          axios.get('http://localhost:8080/api/customers', { headers }).catch(() => ({ data: [] })),
-          axios.get('http://localhost:8080/api/payments', { headers }).catch(() => ({ data: [] })),
-          axios.get('http://localhost:8080/api/reservations', { headers }).catch(() => ({ data: [] }))
-        ]);
-
-        const customers = customersRes.data || [];
-        const payments = paymentsRes.data || [];
-        const reservations = reservationsRes.data || [];
-
-        const totalRevenue = payments.reduce((sum, p) => sum + (p.amountPaid || 0), 0);
-        
-        setStats({
-          revenue: totalRevenue || 0,
-          activeGuests: customers.length,
-          occupancyRate: Math.min(100, 50 + (reservations.length * 2)), // Mock calculation
-          newBookings: reservations.length,
-          transactions: payments.slice(0, 5) // Get latest 5
-        });
-      } catch (error) {
-        console.error("Failed to fetch dashboard data", error);
-      }
+   const fetchData = async () => {
+  try {
+    const headers = {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
     };
+
+    const [
+      customersRes,
+      paymentsRes,
+      reservationsRes,
+      ordersRes,
+      eventPaymentsRes
+    ] = await Promise.all([
+      axios.get('http://localhost:8080/api/customers', { headers }).catch(() => ({ data: [] })),
+      axios.get('http://localhost:8080/api/payments', { headers }).catch(() => ({ data: [] })),
+      axios.get('http://localhost:8080/api/reservations', { headers }).catch(() => ({ data: [] })),
+      axios.get('http://localhost:8080/api/orders', { headers }).catch(() => ({ data: [] })),
+      axios.get('http://localhost:8080/api/event-payments', { headers }).catch(() => ({ data: [] }))
+    ]);
+
+    const customers = customersRes.data || [];
+    const payments = paymentsRes.data || [];
+    const reservations = reservationsRes.data || [];
+    const orders = ordersRes.data || [];
+    const eventPayments = eventPaymentsRes.data || [];
+
+    // ROOM PAYMENTS
+    const roomRevenue = payments.reduce(
+      (sum, p) => sum + (p.amountPaid || 0),
+      0
+    );
+
+    // RESTAURANT ORDERS
+    const orderRevenue = orders.reduce(
+      (sum, o) => sum + (o.totalCost || 0),
+      0
+    );
+
+    // EVENT PAYMENTS
+    const eventRevenue = eventPayments.reduce(
+      (sum, e) => sum + (e.amountPaid || 0),
+      0
+    );
+
+    // TOTAL REVENUE
+    const totalRevenue =
+      roomRevenue +
+      orderRevenue +
+      eventRevenue;
+
+    // COMBINE TRANSACTIONS
+    const allTransactions = [
+      ...payments,
+      ...eventPayments
+    ];
+
+    setStats({
+      revenue: totalRevenue || 0,
+      activeGuests: customers.length,
+      occupancyRate: Math.min(100, 50 + (reservations.length * 2)),
+      newBookings: reservations.length,
+      transactions: allTransactions.slice(0, 5)
+    });
+
+  } catch (error) {
+    console.error("Failed to fetch dashboard data", error);
+  }
+};
     
     fetchData();
   }, []);

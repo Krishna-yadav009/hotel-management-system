@@ -440,9 +440,13 @@ const Booking = () => {
       });
 
       setSubmitted(true);
-      setStep(1);
-      setSelectedRoom(null);
-      setGuestError('');
+
+setError('');          // ✅ clear old error
+setDateError('');      // ✅ clear date error
+setGuestError('');     // ✅ clear guest error
+
+setStep(1);
+setSelectedRoom(null);
       setForm({ roomId: '', checkIn: '', checkOut: '', checkInTime: '14:00', checkOutTime: '11:00', guests: 1, bookingType: 'Full Day' });
     } catch (err) {
       setError('Booking failed: ' + (err.response?.data?.message || err.response?.data || err.message));
@@ -479,8 +483,20 @@ const Booking = () => {
       )}
 
       <div className="page-hero" style={{ background: 'linear-gradient(135deg, #064e3b, #047857)' }}>
-        <h1>Book Your Stay</h1>
-        <p>Reserve your perfect room and experience luxury at its finest</p>
+       <h1 style={{
+  fontSize: '3rem',
+  fontWeight: '800',
+  marginBottom: '0.5rem'
+}}>
+  Book Your Luxury Stay ✨
+</h1>
+
+<p style={{
+  fontSize: '1.1rem',
+  opacity: '0.9'
+}}>
+  Reserve premium rooms with world-class comfort and hospitality.
+</p>
       </div>
 
       <div className="container section">
@@ -497,8 +513,8 @@ const Booking = () => {
 
         {submitted && (
           <div className="success-message animate-fade-in mb-6" style={{ textAlign: 'center', padding: '2rem' }}>
-            ✓ <strong>Reservation submitted successfully!</strong><br />
-            Your booking is pending approval by our staff. You'll receive confirmation shortly.
+            🎉 <strong>Reservation Submitted Successfully!</strong><br />
+            Your booking is pending approval by our staff. Our staff will confirm your luxury booking shortly.
           </div>
         )}
 
@@ -526,8 +542,24 @@ const Booking = () => {
             {step === 1 && (
               <div className="booking-room-list">
                 {rooms.map((room, idx) => (
-                  <div key={idx}
-                    className={`booking-room-item ${selectedRoom?.roomId === room.roomId ? 'selected' : ''} ${room.status === 'maintenance' ? 'room-unavailable' : ''}`}
+                 <div
+  key={idx}
+  className={`booking-room-item ${selectedRoom?.roomId === room.roomId ? 'selected' : ''} ${room.status === 'maintenance' ? 'room-unavailable' : ''}`}
+  style={{
+    transition: 'all 0.3s ease',
+    cursor: room.status === 'maintenance' ? 'not-allowed' : 'pointer'
+  }}
+  onMouseEnter={(e) => {
+    if (room.status !== 'maintenance') {
+      e.currentTarget.style.transform = 'translateY(-4px)';
+      e.currentTarget.style.boxShadow =
+        '0 12px 30px rgba(99,102,241,0.25)';
+    }
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.transform = 'translateY(0px)';
+    e.currentTarget.style.boxShadow = 'none';
+  }}
                     onClick={() => room.status !== 'maintenance' && handleRoomSelect(room)}>
                     <div className="booking-room-icon"><Bed size={24} /></div>
                     <div className="booking-room-info">
@@ -562,11 +594,46 @@ const Booking = () => {
                 <div className="form-row mb-4">
                   <div className="form-group">
                     <label>Check-in Date</label>
-                    <input type="date" value={form.checkIn} min={todayStr()} max={maxDateStr()} onChange={handleCheckInChange} required />
+                   <input
+  type="date"
+  value={form.checkIn}
+  min={todayStr()}
+  max={maxDateStr()}
+  onChange={handleCheckInChange}
+  required
+  style={{
+    width: "100%",
+    padding: "12px",
+    borderRadius: "10px",
+    background: "#0f172a",
+    color: "white",
+    border: "1px solid #334155",
+    cursor: "pointer"
+  }}
+/>
                   </div>
                   <div className="form-group">
                     <label>Check-out Date</label>
-                    <input type="date" value={form.checkOut} min={minCheckoutStr(form.checkIn)} max={maxCheckoutStr(form.checkIn)} onChange={e => { setForm({ ...form, checkOut: e.target.value }); setDateError(''); }} required />
+                    <input
+  type="date"
+  value={form.checkOut}
+  min={minCheckoutStr(form.checkIn)}
+  max={maxCheckoutStr(form.checkIn)}
+  onChange={(e) => {
+    setForm({ ...form, checkOut: e.target.value });
+    setDateError('');
+  }}
+  required
+  style={{
+    width: "100%",
+    padding: "12px",
+    borderRadius: "10px",
+    background: "#0f172a",
+    color: "white",
+    border: "1px solid #334155",
+    cursor: "pointer"
+  }}
+/>
                   </div>
                 </div>
 
@@ -700,7 +767,14 @@ const Booking = () => {
           </div>
 
           {/* ── SUMMARY SIDEBAR ── */}
-          <div className="booking-form-wrapper">
+          <div
+  className="booking-form-wrapper"
+  style={{
+    position: 'sticky',
+    top: '100px',
+    height: 'fit-content'
+  }}
+>
             <div className="card glass">
               <h3 className="mb-6"><Calendar size={20} /> Booking Summary</h3>
               {selectedRoom ? (
@@ -712,7 +786,17 @@ const Booking = () => {
                   <div className="summary-row"><span>Price/Night</span><span>${selectedRoom.pricePerNight}</span></div>
                   <div className="summary-row"><span>Booking Type</span><span className="font-bold text-primary">{form.bookingType}</span></div>
                   {nights > 0
-                    ? <div className="summary-row total"><span>Total</span><span>${totalCost}</span></div>
+                    ? <div
+  className="summary-row total"
+  style={{
+    marginTop: '1rem',
+    paddingTop: '1rem',
+    borderTop: '1px solid rgba(255,255,255,0.08)',
+    fontSize: '1.2rem',
+    fontWeight: '700',
+    color: '#10b981'
+  }}
+><span>Total</span><span>${totalCost}</span></div>
                     : form.checkIn && form.checkOut && (
                       <div className="summary-row" style={{ color: '#ef4444', fontSize: '0.8rem' }}>
                         <span>Total</span><span>— (invalid dates)</span>

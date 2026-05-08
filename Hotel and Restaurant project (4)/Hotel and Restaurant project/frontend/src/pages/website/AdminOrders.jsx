@@ -14,8 +14,10 @@ const AdminOrders = () => {
       const res = await axios.get(`${API}/orders`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setOrders(res.data);
-    } catch {
+
+      setOrders(res.data || []);
+    } catch (err) {
+      console.error(err);
       alert("Failed to load orders");
     }
   };
@@ -28,15 +30,20 @@ const AdminOrders = () => {
     try {
       setLoading(true);
 
-      await axios.put(
-        `${API}/orders/${id}/status?status=${status}`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
+      await axios.patch(
+        `${API}/orders/${id}/status`,
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
 
       fetchOrders();
 
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert("Error updating order");
     } finally {
       setLoading(false);
@@ -44,30 +51,88 @@ const AdminOrders = () => {
   };
 
   const renderActions = (order) => {
-    switch (order.status) {
+    switch (order.status?.toLowerCase()) {
+
       case "pending":
         return (
-          <button onClick={() => updateStatus(order.restaurantOrderId, "accepted")}>
+          <button
+            onClick={() =>
+              updateStatus(order.restaurantOrderId, "preparing")
+            }
+            style={{
+              padding: "6px 12px",
+              background: "#2563eb",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer"
+            }}
+          >
             Accept
-          </button>
-        );
-
-      case "accepted":
-        return (
-          <button onClick={() => updateStatus(order.restaurantOrderId, "preparing")}>
-            Start Preparing
           </button>
         );
 
       case "preparing":
         return (
-          <button onClick={() => updateStatus(order.restaurantOrderId, "completed")}>
-            Mark Completed
+          <button
+            onClick={() =>
+              updateStatus(order.restaurantOrderId, "served")
+            }
+            style={{
+              padding: "6px 12px",
+              background: "#7c3aed",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer"
+            }}
+          >
+            Served
+          </button>
+        );
+
+      case "served":
+        return (
+          <button
+            onClick={() =>
+              updateStatus(order.restaurantOrderId, "completed")
+            }
+            style={{
+              padding: "6px 12px",
+              background: "#059669",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer"
+            }}
+          >
+            Complete
           </button>
         );
 
       case "completed":
-        return <span style={{ color: "green", fontWeight: "bold" }}>✔ Done</span>;
+        return (
+          <span
+            style={{
+              color: "limegreen",
+              fontWeight: "bold"
+            }}
+          >
+            ✔ Done
+          </span>
+        );
+
+      case "canceled":
+        return (
+          <span
+            style={{
+              color: "red",
+              fontWeight: "bold"
+            }}
+          >
+            ✖ Canceled
+          </span>
+        );
 
       default:
         return null;
@@ -76,46 +141,97 @@ const AdminOrders = () => {
 
   return (
     <div style={{ padding: 20 }}>
-        <h1 style={{ color: "red" }}>🔥 ADMIN ORDERS NEW PAGE</h1>
+
       <h2>Admin Orders</h2>
 
       {loading && <p>Updating...</p>}
 
-      <table border="1" cellPadding="10" style={{ width: "100%" }}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Customer</th>
-            <th>Total</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+     <table
+  style={{
+    width: "100%",
+    borderCollapse: "collapse",
+    marginTop: "20px"
+  }}
+>
+  <thead>
+    <tr
+      style={{
+        borderBottom: "1px solid #374151",
+        textAlign: "left"
+      }}
+    >
+      <th style={{ padding: "14px" }}>ID</th>
+      <th style={{ padding: "14px" }}>Customer</th>
+      <th style={{ padding: "14px" }}>Total</th>
+      <th style={{ padding: "14px" }}>Status</th>
+      <th style={{ padding: "14px" }}>Actions</th>
+    </tr>
+  </thead>
 
-        <tbody>
-          {orders.map(o => (
-            <tr key={o.restaurantOrderId}>
-              <td>{o.restaurantOrderId}</td>
-              <td>{o.customerId}</td>
-              <td>₹{o.totalCost}</td>
+  <tbody>
+    {orders.length > 0 ? (
+      orders.map((o) => (
+        <tr
+          key={o.restaurantOrderId}
+          style={{
+            borderBottom: "1px solid #1f2937"
+          }}
+        >
+          <td style={{ padding: "14px" }}>
+            {o.restaurantOrderId}
+          </td>
 
-              <td>
-                <span style={{
-                  color:
-                    o.status === "pending" ? "orange" :
-                    o.status === "accepted" ? "blue" :
-                    o.status === "preparing" ? "purple" :
-                    o.status === "completed" ? "green" : "black"
-                }}>
-                  {o.status}
-                </span>
-              </td>
+          <td style={{ padding: "14px" }}>
+            {o.customerId}
+          </td>
 
-              <td>{renderActions(o)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          <td style={{ padding: "14px" }}>
+            ₹{o.totalCost}
+          </td>
+
+          <td style={{ padding: "14px" }}>
+            <span
+              style={{
+                color:
+                  o.status === "pending"
+                    ? "orange"
+                    : o.status === "preparing"
+                    ? "#3b82f6"
+                    : o.status === "served"
+                    ? "#a855f7"
+                    : o.status === "completed"
+                    ? "#22c55e"
+                    : o.status === "canceled"
+                    ? "red"
+                    : "white",
+                fontWeight: "bold",
+                textTransform: "capitalize"
+              }}
+            >
+              {o.status}
+            </span>
+          </td>
+
+          <td style={{ padding: "14px" }}>
+            {renderActions(o)}
+          </td>
+        </tr>
+      ))
+    ) : (
+      <tr>
+        <td
+          colSpan="5"
+          style={{
+            textAlign: "center",
+            padding: "20px"
+          }}
+        >
+          No Orders Found
+        </td>
+      </tr>
+    )}
+  </tbody>
+</table>
     </div>
   );
 };

@@ -55,7 +55,7 @@ const MyEventBookings = () => {
                 </div>
                 <div className="flex gap-4">
                     <div className="flex items-center gap-2 bg-card p-1 rounded-lg border border-border">
-                        {['ALL', 'PENDING', 'APPROVED', 'CONFIRMED'].map(f => (
+                        {['ALL', 'PENDING', 'APPROVED', 'PAYMENT_PENDING', 'CONFIRMED'].map(f => (
                             <button 
                                 key={f}
                                 onClick={() => setFilter(f)}
@@ -110,10 +110,17 @@ const MyEventBookings = () => {
                                     <Link to={`/customer/my-events/${booking.bookingId}`} className="btn btn-outline w-full text-sm py-2 mb-2">
                                         Manage Event <ArrowRight size={14} />
                                     </Link>
-                                    {booking.status === 'APPROVED' && (
-                                        <Link to={`/customer/event-payment/${booking.bookingId}`} className="btn btn-primary w-full text-sm py-2">
-                                            Pay Advance <DollarSign size={14} />
-                                        </Link>
+                                    {(
+                                    booking.status === 'APPROVED' ||
+                                    booking.status === 'PAYMENT_PENDING' ||
+                                    booking.status === 'CONFIRMED'
+                                        ) && (
+                                             <Link
+                                              to={`/customer/event-payment/${booking.bookingId}`}
+                                                 className="btn btn-primary w-full text-sm py-2"
+                                                >
+                                               Pay Advance <DollarSign size={14} />
+                                              </Link>
                                     )}
                                     {booking.status === 'REJECTED' && (
                                         <div className="p-3 bg-danger/10 border border-danger/20 rounded-lg">

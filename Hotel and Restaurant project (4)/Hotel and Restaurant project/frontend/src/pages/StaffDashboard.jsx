@@ -51,7 +51,12 @@ const StaffDashboard = () => {
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon"><Calendar /></div>
+          <div
+  className="stat-icon"
+  style={{
+    boxShadow: '0 0 25px rgba(99,102,241,0.25)'
+  }}
+><Calendar /></div>
           <div className="stat-info">
             <h4>Total Reservations</h4>
             <p>{data.todayArrivals.length}</p>

@@ -104,14 +104,6 @@ const DashboardLayout = ({ allowedRoles }) => {
       </aside>
 
       <div className="main-content">
-        <header className="topbar card mb-6 p-4 rounded-xl flex justify-between glass">
-          <h3>Welcome, {userName || (role ? role.charAt(0) + role.slice(1).toLowerCase() : 'Guest')}!</h3>
-          <div className="flex items-center gap-4">
-            <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), var(--secondary))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700 }}>
-              {(userName || role || 'G').charAt(0).toUpperCase()}
-            </div>
-          </div>
-        </header>
         <div className="animate-fade-in flex-col" style={{ flex: 1 }}><Outlet /></div>
       </div>
     </div>
