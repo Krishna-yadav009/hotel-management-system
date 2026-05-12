@@ -185,6 +185,7 @@ const RoomDetailModal = ({ room, onClose }) => {
    Rooms Page
    =================================================================== */
 const Rooms = () => {
+  const navigate = useNavigate();
   const [rooms, setRooms] = useState([]);
   const [filter, setFilter] = useState('all');
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -199,8 +200,26 @@ const Rooms = () => {
   return (
     <div className="page-wrapper">
       <div className="page-hero" style={{ background: 'linear-gradient(135deg, #1e1b4b, #312e81)' }}>
-        <h1>Our Rooms & Suites</h1>
-        <p>Find the perfect accommodation for your stay</p>
+        <h1
+  style={{
+    fontSize: '3.5rem',
+    fontWeight: '800',
+    marginBottom: '0.75rem'
+  }}
+>
+  Luxury Rooms & Suites
+</h1>
+
+<p
+  style={{
+    fontSize: '1.1rem',
+    maxWidth: '700px',
+    margin: '0 auto',
+    opacity: '0.9'
+  }}
+>
+  Experience elegance, comfort, and world-class hospitality in every stay.
+</p>
       </div>
       <div className="container section">
         <div className="filter-bar">
@@ -214,8 +233,50 @@ const Rooms = () => {
           {filtered.map((room, idx) => {
             const meta = getMeta(room.roomType);
             return (
-              <div key={idx} className="room-card animate-fade-in" style={{ animationDelay: `${idx * 0.05}s` }}>
-                <div className="room-image" style={{ backgroundImage: `url(${meta.images[0]})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+              <div key={idx} className="room-card animate-fade-in" style={{
+  animationDelay: `${idx * 0.05}s`,
+  transition: 'all 0.3s ease',
+  cursor: 'pointer'
+}}
+onMouseEnter={(e) => {
+  e.currentTarget.style.transform = 'translateY(-8px)';
+  e.currentTarget.style.boxShadow =
+    '0 20px 40px rgba(99,102,241,0.2)';
+}}
+onMouseLeave={(e) => {
+  e.currentTarget.style.transform = 'translateY(0px)';
+  e.currentTarget.style.boxShadow = 'none';
+}}><div
+  className="room-image"
+  style={{
+    backgroundImage: `url(${meta.images[0]})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    position: 'relative'
+  }}
+>
+  <div
+    style={{
+      position: 'absolute',
+      inset: 0,
+      background:
+        'linear-gradient(to top, rgba(0,0,0,0.45), transparent)'
+    }}
+  />
+
+  <span
+    className={`room-badge ${
+      room.status === 'available'
+        ? ''
+        : room.status === 'maintenance'
+        ? 'room-badge-occupied'
+        : ''
+    }`}
+  >
+    {room.status === 'maintenance'
+      ? 'Maintenance'
+      : 'Available'}
+  </span>
                   <span className={`room-badge ${room.status === 'available' ? '' : room.status === 'maintenance' ? 'room-badge-occupied' : ''}`}>
                     {room.status === 'maintenance' ? 'Maintenance' : 'Available'}
                   </span>
@@ -228,12 +289,25 @@ const Rooms = () => {
                     <span><Bed size={14} /> {meta.bedType}</span>
                     <span>{meta.sqft}</span>
                   </div>
-                  <div className="room-footer">
-                    <span className="room-price">${room.pricePerNight}<small>/night</small></span>
-                    <button className="btn btn-primary btn-sm" onClick={() => setSelectedRoom(room)}>
-                      View Details <ChevronRight size={14} />
-                    </button>
-                  </div>
+                 <div style={{ display: 'flex', gap: '0.5rem' }}>
+  <button
+    className="btn btn-outline btn-sm"
+    onClick={() => setSelectedRoom(room)}
+  >
+    Details
+  </button>
+
+  <button
+    className="btn btn-primary btn-sm"
+    onClick={() =>
+      navigate('/booking', {
+        state: { roomId: room.roomId }
+      })
+    }
+  >
+    Book Now <ChevronRight size={14} />
+  </button>
+</div>
                 </div>
               </div>
             );
