@@ -139,9 +139,11 @@ public class ServiceRequestServiceImpl implements ServiceRequestService {
 
     @Override
     public List<ServiceRequestDto> getServiceRequestsByCustomerId(Integer customerId) {
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-        return requestRepository.findByCustomerAndBillIsNull(customer).stream()
-                .map(this::mapToDto).collect(Collectors.toList());
+
+        return requestRepository.findByCustomerCustomerId(customerId)
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+
     }
 }
